@@ -1,0 +1,14 @@
+name: iocl
+channels:
+  - conda-forge
+  - defaults
+  - scipy
+dependencies:
+  - python=3.10
+  - numpy
+  - matplotlib
+  - tk
+  - platform
+  - scipy
+  - opencv
+  - ctypes
