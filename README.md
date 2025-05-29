@@ -58,12 +58,21 @@ To set up the required environment, follow these steps:
 ### **Contents of `environment.yml`**
 Below is the content of the `environment.yml` file used to set up the environment:
 
-```yaml
 name: iocl
 channels:
   - conda-forge
   - defaults
+  - scipy
 dependencies:
+  - python=3.10
+  - numpy
+  - matplotlib
+  - tk
+  - platform
+  - scipy
+  - opencv
+  - ctypes
+
   - python=3.10
   - numpy
   - matplotlib
