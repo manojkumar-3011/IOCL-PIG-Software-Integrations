@@ -1,0 +1,212 @@
+get_mp = 3:4; 
+%% AIP 
+aip.ref_data = false; 
+aip.number_of_vm = 2; 
+aip.selected_marker_indices = marker_selector(get_mp); 
+aip.number_of_vm = 0; 
+aip.S2.en_pause = true; 
+aip.S2.pause_timing = 0.2; 
+aip.S2.dont_save_orient = false; 
+aip.S6.sentvty = 2; 
+aip.S6.breaking_iter = start_breaking_iter; % <-- depends on saved files 
+aip.S6.buzzer_on_iter = inf; 
+aip.en_plot = @(iter) mod(iter,20)==0; 
+
+%% Additional settings and data grab 
+ds = 100;
+aip.number_of_vm = 2;
+aip.S6.sentvty = 0.5;
+aip.S6.breaking_iter = 200;
+c2_sim_ig = simulate_ili_run_expC2(ds,true,aip);
+c2_sim_ig.S2_main_best_initial_orientation();
+
+%% Assumption 
+disp('Assume PIG and IMU x-axis are aligned (same direction).')
+
+%% Plot IMU raw data 
+figure(1)
+clf
+subplot(1,2,1)
+plot(c2_sim_ig.datapoints(1:3,:)')
+subplot(1,2,2)
+plot(c2_sim_ig.datapoints(4:6,:)')
+sgtitle(['Raw IMU between marker points --> ',num2str(get_mp(1)),' and ',num2str(get_mp(end))]) 
+figure(43)
+clf
+plot(c2_sim_ig.datapoints(7:9,:)')
+title(['Odo between marker points --> ',num2str(get_mp(1)),' and ',num2str(get_mp(end))]) 
+figure(4)
+clf
+bent_indx=10:50;
+for i=1:6 % plot small parts 
+    plot(c2_sim_ig.datapoints(8,bent_indx)',c2_sim_ig.datapoints(i,bent_indx)')
+    hold on
+end 
+hold off
+title(['Metric IMU between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+
+%% compute acc gains and Plot
+no_xacc_indx = 90:110; 
+imu_dp_no_xacc = c2_sim_ig.datapoints(:,no_xacc_indx); 
+norm_raw_acc = sqrt(sum(imu_dp_no_xacc(4:6,:).^2,1)); 
+acc_gain = 9.81/mean(norm_raw_acc); 
+figure(1)
+clf
+plot(acc_gain*c2_sim_ig.datapoints(4:6,:)')
+sgtitle(['ACC between marker points --> ',num2str(get_mp(1)),' and ',num2str(get_mp(end))])
+figure(43)
+clf
+plot(imu_dp_no_xacc(4:6,:)')
+sgtitle(['Raw ACC between index points --> ',num2str(no_xacc_indx(1)),' and ',num2str(no_xacc_indx(end))])
+figure(4)
+clf
+disp(['The acc gain is ',num2str(acc_gain)]) 
+plot(norm_raw_acc)
+title(['Raw ACC norm between index points --> ',num2str(no_xacc_indx(1)),' and ',num2str(no_xacc_indx(end))]) 
+
+%% grab the bent datapoints  
+best_gain_computed = c2_sim_ig.best_gain; 
+new_best_gain = best_gain_computed; new_best_gain(4:6) = acc_gain; 
+bent_datapoints = c2_sim_ig.datapoints(:,bent_indx); 
+bent_imu_mes = diag(new_best_gain)*bent_datapoints(1:6,:); 
+
+%% analyse ACC and plot ACC converted data of bent 
+figure(1)
+clf
+plot(bent_imu_mes')
+title(['Metric IMU between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(43)
+clf
+norm_acc = sqrt(sum(bent_imu_mes(4:6,:).^2,1)); 
+plot(norm_acc)
+title(['Acc norm between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(4)
+clf
+norm_acc_dp = sqrt(sum(mp_imu_mes(4:6,:).^2,1)); 
+plot(norm_acc_dp)
+title(['Acc norm between marker points --> ',num2str(get_mp(1)),' and ',num2str(get_mp(end))]) 
+
+%% compute PIG/IMU orientation 
+mean_acc_vec_no_acc = acc_gain*mean(imu_dp_no_xacc(4:6,:),2); 
+disp(['The acceleration vector -->    ',num2str(mean_acc_vec_no_acc')]); 
+roll_angle = atan2(mean_acc_vec_no_acc(2),mean_acc_vec_no_acc(3)); 
+disp(['The roll angle is ',num2str(roll_angle*180/pi),' degrees']); 
+disp(['Cross check -->   ', num2str(9.81*[sin(roll_angle),cos(roll_angle)])])
+disp('Assuming zero pitch and 180 degree yaw')
+pitch_angle = 0; % not looking down or up
+yaw_angle = pi; % facing south 
+quat_angle = angle2quat(yaw_angle,pitch_angle,roll_angle); 
+[pitch, roll, yaw] = quat2angle( quat_angle, 'YXZ' ); 
+disp(['Pitch = ',num2str(pitch*180/pi),' & Roll = ',num2str(roll*180/pi),...
+    ' & Yaw = ',num2str(yaw*180/pi)])
+disp('>> NOTE: negative gain in roll angle, why?')
+
+%% compute gyro gains 
+disp('Assuming the net yaw is 90 degrees ccw-z after the bent')
+dT = c2_sim_ig.downsampling/c2_sim_ig.sampling_frequency; 
+norm_bent_gyro_datapoints = sqrt(sum(bent_datapoints(1:3,:).^2,1)); 
+net_raw_angle_integration = sum(dT*norm_bent_gyro_datapoints); 
+disp(['Net rotation (raw value) about z-axis is ',num2str(net_raw_angle_integration)])
+gyro_gain = (pi/2)/net_raw_angle_integration; 
+new_best_gain(1:3) = gyro_gain; 
+disp(['The gyro gain is ',num2str(gyro_gain)]) 
+crude_angle_integration = cumsum(dT*gyro_gain*norm_bent_gyro_datapoints); 
+figure(1)
+clf
+plot(bent_datapoints(1:3,:)')
+title(['Raw IMU-gyro between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(43)
+clf
+plot(crude_angle_integration*180/pi)
+title(['Crude integration for norm angle, between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))])
+figure(4)
+clf
+
+%% IMU mes between markers - converted to real values 
+raw_datapoints = c2_sim_ig.datapoints; 
+mp_imu_mes = diag(new_best_gain)*raw_datapoints(1:6,:); 
+disp(['The new best gain is -->   ',num2str(new_best_gain')])
+
+%% bent mes again 
+bent_imu_mes = diag(new_best_gain)*bent_datapoints(1:6,:); 
+
+%% analyse GYRO and plot GYRO converted data 
+figure(1)
+clf
+plot(bent_imu_mes')
+title(['Metric IMU between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(43)
+clf
+norm_gyr = sqrt(sum(bent_imu_mes(1:3,:).^2,1)); 
+plot(norm_gyr)
+title(['Gyro norm between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(4)
+clf
+norm_gyr_dp = sqrt(sum(mp_imu_mes(1:3,:).^2,1)); 
+plot(norm_gyr_dp)
+title(['Gyro norm between marker points --> ',num2str(get_mp(1)),' and ',num2str(get_mp(end))]) 
+
+%% Forward velocity 
+bent_s_traj = c2_sim_ig.odo_gain_guess*bent_datapoints(7:9,:); 
+bent_vf_traj = (bent_s_traj(:,2:end)-bent_s_traj(:,1:end-1))/dT; 
+figure(1)
+clf
+plot(bent_s_traj')
+title(['Length travelled between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(43)
+clf
+plot(bent_vf_traj')
+title(['Forward velocity between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(4)
+clf
+mean_vf = mean(bent_vf_traj(2:end,:),'all'); 
+disp(['Mean forward velocity = ',num2str(mean_vf)])
+
+%% Checking dynamics maths 
+imu_dp_init = bent_datapoints(:,1:10); 
+mean_acc_vec_init = acc_gain*mean(imu_dp_init(4:6,:),2); 
+disp(['The acceleration vector -->    ',num2str(mean_acc_vec_init')]); 
+roll_init = atan2(mean_acc_vec_init(2),mean_acc_vec_init(3)); 
+pitch_init = -asin(mean_acc_vec_init(1)/9.81); % not looking down or up
+yaw_init = pi; % facing south 
+quat_init = angle2quat(yaw_init,pitch_init,roll_init); 
+C_q = quat2rotm(quat_init); 
+% C_q = rotz(yaw_init*180/pi)*roty(pitch_init*180/pi)*rotx(roll_init*180/pi); 
+acc_imu = bent_imu_mes(4:6,1); 
+acc_inertial = C_q*acc_imu; 
+disp(['The body-frame acceleration -->    ',num2str(acc_imu')])
+disp(['The inertial-frame acceleration -->    ',num2str(acc_inertial')])
+disp(['Pitch = ',num2str(pitch_init*180/pi),' & Roll = ',num2str(roll_init*180/pi),...
+    ' & Yaw = ',num2str(yaw_init*180/pi)])
+
+%% Checking on PIG dynamics 
+v_init = -mean_vf; 
+u_all = [bent_imu_mes(4:6,:); bent_imu_mes(1:3,:)]; 
+x = [0,c2_sim_ig.start_gps,quat_init,[v_init,0,0],zeros(1,6)]'; 
+k_acc = ones(1,3); k_gyr = 0ones(1,3); 
+params = [k_acc,k_gyr,dT,1]'; 
+x_all = x; 
+[pitch, roll, yaw] = quat2angle( x(5:8)', 'YXZ' ); 
+rpy = [roll;pitch;yaw]; 
+for u = u_all
+    x = pig_eucld_dynamics(0,x,u,params); 
+    x_all = [x_all, x]; 
+    [yaw, pitch, roll] = quat2angle( x(5:8)' ); 
+    rpy = [rpy, [roll;pitch;yaw]]; 
+end 
+figure(1)
+clf
+geoplot(x_all(2,:)',x_all(3,:)')
+title(['GPS plot between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(43)
+clf
+plot(180*rpy'/pi)
+title(['RPY angles between index --> ',num2str(bent_indx(1)),' and ',num2str(bent_indx(end))]) 
+figure(4)
+clf
+% norm_acc_dp = sqrt(sum(mp_imu_mes(1:3,:).^2,1)); 
+% plot(norm_acc_dp)
+% title(['Gyro norm between marker points --> ',num2str(get_mp(1)),' and ',num2str(get_mp(end))]) 
+
+
+

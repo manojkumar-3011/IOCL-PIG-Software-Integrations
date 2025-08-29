@@ -1,0 +1,9 @@
+LIBRARY pig_dynamics_mex.mexw64
+EXPORTS
+mexFunction
+mexfilerequiredapiversion
+emlrtMexFcnProperties
+pig_eucld_dynamics
+pig_eucld_dynamics_initialize
+pig_eucld_dynamics_terminate
+pig_eucld_dynamics_atexit

@@ -1,0 +1,71 @@
+INFO - 11:27:32.521 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:91: File C:\Users\admin\Downloads\SiddeshCode\Code\logs\temp_result_sheet.csv not found.
+INFO - 11:27:32.521 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:781: Patching Update..
+WARNING - 11:29:56.844 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:797: patch.m not found
+INFO - 12:39:53.081 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:91: File C:\Users\admin\Downloads\SiddeshCode\Code\logs\temp_result_sheet.csv not found.
+INFO - 12:39:53.081 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:781: Patching Update..
+INFO - 14:08:07.529 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:91: File C:\Users\admin\Downloads\SiddeshCode\Code\logs\temp_result_sheet.csv not found.
+INFO - 14:08:07.530 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:781: Patching Update..
+WARNING - 14:08:15.219 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:797: patch.m not found
+INFO - 10:26:09.217 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:91: File C:\Users\admin\Downloads\SiddeshCode\Code\logs\temp_result_sheet.csv not found.
+INFO - 10:26:09.217 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:781: Patching Update..
+WARNING - 10:26:12.784 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:797: patch.m not found
+INFO - 15:44:06.013 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:91: File C:\Users\admin\Downloads\SiddeshCode\Code\logs\temp_result_sheet.csv not found.
+INFO - 15:44:06.013 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:781: Patching Update..
+WARNING - 15:44:12.289 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:797: patch.m not found
+INFO - 16:23:53.445 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:91: File C:\Users\admin\Downloads\SiddeshCode\Code\logs\temp_result_sheet.csv not found.
+INFO - 16:23:53.445 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:781: Patching Update..
+INFO - 16:26:32.047 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:91: File C:\Users\admin\Downloads\SiddeshCode\Code\logs\temp_result_sheet.csv not found.
+INFO - 16:26:32.047 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:781: Patching Update..
+WARNING - 16:26:34.878 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:797: patch.m not found
+INFO - 00:08:41.991 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:92: File C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\logs\temp_result_sheet.csv not found.
+INFO - 00:08:41.991 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:782: Patching Update..
+WARNING - 00:08:44.495 - c:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:798: patch.m not found
+INFO - 17:35:39.479 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:93: File C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\logs\temp_result_sheet.csv not found.
+INFO - 17:35:39.485 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:783: Patching Update..
+WARNING - 17:35:41.343 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:799: patch.m not found
+INFO - 17:36:13.114 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:718: Submit button clicked
+INFO - 17:36:13.114 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:563: Computation Method selected: Joint
+INFO - 17:36:13.115 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:587: Joint Checkpoints: [1, 3]
+INFO - 17:36:13.115 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:631: Plots Disabled
+INFO - 17:36:13.128 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:690: MATLAB process started
+INFO - 17:36:13.140 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:301: Processing directory: C:/Users/admin/Downloads/SD/sample imu data
+INFO - 17:36:13.142 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:226: 'INPUT' folder not found in source.
+INFO - 17:36:13.144 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:226: 'OPTIONAL_INPUT' folder not found in source.
+INFO - 17:36:13.150 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:144: MATLAB OPTIONS: ['-wait', '-nosplash', '-nodesktop', '-noFigureWindows', '-r', "addpath('C:\\Users\\admin\\Downloads\\SiddeshCode\\Code\\codeRepo\\app\\MATLAB\\Estimator'); master_exec([1, 3], 1, 0, 0, '20250719-1736'); exit;"]
+CRITICAL - 17:36:13.161 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:165: An unexpected error occurred while executing the MATLAB script.
+Traceback (most recent call last):
+  File "C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py", line 148, in run_matlab_script
+    result = subprocess.run(["matlab"] + matlab_options, capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+  File "C:\Users\admin\anaconda3\envs\mycondaenv\lib\subprocess.py", line 503, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "C:\Users\admin\anaconda3\envs\mycondaenv\lib\subprocess.py", line 971, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "C:\Users\admin\anaconda3\envs\mycondaenv\lib\subprocess.py", line 1456, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+INFO - 17:36:13.171 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:36: Execution time of run_matlab_script: 0.0229 seconds
+CRITICAL - 17:36:13.191 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:336: An unexpected error occurred while executing the MATLAB script.
+Traceback (most recent call last):
+  File "C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py", line 331, in init_matlab_from_app
+    execute_parallel_threads(matlab_script_path, computation_method, num_threads, accuracy_mode, plot_frequency, checkpoints, gain_strs, marker_format, computation_sheet, admin_input)
+  File "C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py", line 399, in execute_parallel_threads
+    status, checkpoints[cp_idx], checkpoints[cp_idx+1], computation_method, result_folder, round(elapsed_time, 2)
+TypeError: type str doesn't define __round__ method
+INFO - 17:36:13.198 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:144: MATLAB OPTIONS: ['-wait', '-nosplash', '-nodesktop', '-noFigureWindows', '-r', "addpath('C:\\Users\\admin\\Downloads\\SiddeshCode\\Code\\codeRepo\\app\\MATLAB\\Estimator'); auto_gen_all_estimates(); exit;"]
+CRITICAL - 17:36:13.212 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:165: An unexpected error occurred while executing the MATLAB script.
+Traceback (most recent call last):
+  File "C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py", line 148, in run_matlab_script
+    result = subprocess.run(["matlab"] + matlab_options, capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+  File "C:\Users\admin\anaconda3\envs\mycondaenv\lib\subprocess.py", line 503, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "C:\Users\admin\anaconda3\envs\mycondaenv\lib\subprocess.py", line 971, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "C:\Users\admin\anaconda3\envs\mycondaenv\lib\subprocess.py", line 1456, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+INFO - 17:36:13.213 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:36: Execution time of run_matlab_script: 0.0178 seconds
+INFO - 17:36:13.215 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:97: Output directory C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\MATLAB\OUTPUT does not exist!
+INFO - 17:36:13.215 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:342: Successfully Copied Temp Output Folder: MATLAB\OUTPUT
+INFO - 17:36:13.215 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:97: Output directory C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\MATLAB\CSV_OUTPUT does not exist!
+INFO - 17:36:13.216 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\utils.py:342: Successfully Copied Temp Output Folder: MATLAB\CSV_OUTPUT
+INFO - 17:36:13.217 - C:\Users\admin\Downloads\SiddeshCode\Code\codeRepo\app\app.py:690: MATLAB process completed

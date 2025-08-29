@@ -1,0 +1,196 @@
+restoredefaultpath
+addpath('../Viz/')
+addpath('../Test_MEX/DMM_mex/')
+%% Input 
+get_mp = input('Input marker IDs for estimation: '); 
+if isempty(get_mp) 
+    get_mp = 2:3; 
+    en_admin_mode = true; 
+else 
+    en_admin_mode = false; 
+end 
+if strcmp(get_mp,'adm') 
+    en_admin_mode = true; 
+    get_mp = input('[Admin] Input marker IDs for estimation: '); 
+end 
+disp('Press `0` to select quick mode ') 
+disp('Press `1` to select quick+accuracy mode (under construction) ') 
+disp('Press `2` to select only accuracy mode (under construction) ') 
+disp('Press `3` to select VM mode (under construction) ') 
+get_mode = input(' > [default is quick mode]: '); 
+if isempty(get_mode) 
+    get_mode = 0; % <-- quick mode 
+end 
+
+%% 
+tic; 
+start_time = toc; 
+
+%% Saved agb_now2 
+start_breaking_iter = 480; 
+try % load admin saved params 
+    load('admin_files/to_continue_unkwn_dT_vel_scld.mat','agb_now2')
+    % load('best_imu_gain.mat')
+    % agb_now2(2:4, :) = new_best_gain(:, 1:3);
+    % agb_now2(8:10, :) = new_best_gain(:, 4:6); 
+    start_iter = 1; 
+    save(['../OUTPUT', path_suffix, '/to_continue_unkwn_dT_vel_scld.mat'],'start_iter','agb_now2')
+    start_breaking_iter = 40; 
+catch 
+    try % load previous saved params 
+        load(['../OUTPUT', path_suffix, '/to_continue_unkwn_dT_vel_scld.mat'],'agb_now2') 
+        % load('best_imu_gain.mat')
+        % agb_now2(2:4, :) = new_best_gain(:, 1:3);
+        % agb_now2(8:10, :) = new_best_gain(:, 4:6);
+        start_iter = 1; 
+        save(['../OUTPUT', path_suffix, '/to_continue_unkwn_dT_vel_scld.mat'],'start_iter','agb_now2') 
+        start_breaking_iter = 120; 
+    catch err
+        disp(newline)
+        warning('IGNORED ERROR WARNING::')
+        warning(getReport(err,'extended'));
+        disp(newline)
+    end 
+end 
+
+%% AIP 
+aip.ref_data = false; 
+aip.number_of_vm = 2; 
+aip.selected_marker_indices = marker_selector(get_mp); 
+aip.number_of_vm = 0; 
+aip.S2.en_pause = true; 
+aip.S2.pause_timing = 0.2; 
+aip.S2.dont_save_orient = false; 
+aip.S6.sentvty = 2; 
+aip.S6.breaking_iter = start_breaking_iter; % <-- depends on saved files 
+aip.S6.buzzer_on_iter = inf; 
+aip.en_plot = @(iter) mod(iter,20)==0; 
+% 
+ds = 1000; 
+
+%% Admin interface 
+admin.create_obj = true | ~en_admin_mode; 
+% 
+admin.S2_r1 = true | ~en_admin_mode; 
+admin.S6_r1a = true | ~en_admin_mode; 
+admin.S6_r1b = true | ~en_admin_mode; 
+admin.S6_r1c = true | ~en_admin_mode; 
+%
+admin.S6_r2 = true | ~en_admin_mode; 
+%
+admin.S6_r3 = true | ~en_admin_mode; 
+%
+admin.S6_r4 = true | ~en_admin_mode; 
+%
+admin.S6_r5 = true | ~en_admin_mode; 
+%
+admin.S6_r6 = true | ~en_admin_mode; 
+
+if get_mode>=0 && get_mode<=1 
+    %% Round 1a - very fast less accurate 
+    figure(43); clf; title('Round-1a'); figure(1) 
+    ds = 100; 
+    aip.number_of_vm = 0; 
+    aip.S6.sentvty = 0.5; 
+    aip.S6.breaking_iter = 240; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    % if admin.S2_r1; c2_sim_ig.S2_main_best_initial_orientation(); end 
+    c2_sim_ig.best_initial_orientation = [0.0155235729759567	0.00118157100495855	-0.341181799204306	-0.939868396353305]';
+
+    if admin.S6_r1a; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+
+    %% Round 1b - very fast imporove accurate 
+    figure(43); clf; title('Round-1b'); figure(1) 
+    ds = 100; 
+    aip.number_of_vm = 0; 
+    aip.S6.sentvty = 0.05; 
+    aip.S6.breaking_iter = 480; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    c2_sim_ig.best_initial_orientation = [0.0155235729759567	0.00118157100495855	-0.341181799204306	-0.939868396353305]';
+
+    if admin.S6_r1b; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+
+    %% Round 1c - very fast imporove accurate 
+    figure(43); clf; title('Round-1c'); figure(1) 
+    ds = 100; 
+    aip.number_of_vm = 2; 
+    aip.S6.sentvty = 0.01; 
+    aip.S6.breaking_iter = 240; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    c2_sim_ig.best_initial_orientation = [0.0155235729759567	0.00118157100495855	-0.341181799204306	-0.939868396353305]';
+
+    if admin.S6_r1c; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+    
+    %% Round 2 - fast 
+    figure(43); clf; title('Round-2'); figure(1) 
+    ds = 100; 
+    aip.number_of_vm = 2; 
+    aip.S6.sentvty = 0.5; 
+    aip.S6.breaking_iter = 200; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    c2_sim_ig.best_initial_orientation = [0.0155235729759567	0.00118157100495855	-0.341181799204306	-0.939868396353305]';
+
+    if admin.S6_r2; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+    
+    %% Round 3a - increase accuracy (odovelmag_scld, no loglagr) 
+    figure(43); clf; title('Round-3a'); figure(1) 
+    ds = 100; 
+    aip.number_of_vm = 2; 
+    aip.S6.sentvty = 0.05; 
+    aip.S6.breaking_iter = 40; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    c2_sim_ig.best_initial_orientation = [0.0155235729759567	0.00118157100495855	-0.341181799204306	-0.939868396353305]';
+
+    if admin.S6_r3; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_odovelmag_scld_odovelcst_gd_lagr(); end 
+
+    %% Round 3b - increase accuracy 
+    figure(43); clf; title('Round-3b'); figure(1) 
+    ds = 100; 
+    aip.number_of_vm = 2; 
+    aip.S6.sentvty = 0.05; 
+    aip.S6.breaking_iter = 40; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    c2_sim_ig.best_initial_orientation = [0.0155235729759567	0.00118157100495855	-0.341181799204306	-0.939868396353305]';
+
+    if admin.S6_r3; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_ovs_ovcst_gd_loglagr(); end 
+
+    %% Round 4 - convergence focus (no loglagr) 
+    figure(43); clf; title('Round-4'); figure(1) 
+    ds = 100; 
+    aip.number_of_vm = 2; 
+    aip.S6.sentvty = 0.01; 
+    aip.S6.breaking_iter = 120; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    c2_sim_ig.best_initial_orientation = [0.0155235729759567	0.00118157100495855	-0.341181799204306	-0.939868396353305]';
+
+    if admin.S6_r4; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_lagr(); end 
+end 
+
+if get_mode>=1 && get_mode<=2 
+    %% Round 5 - slow, less accurate, and convergence focus 
+    figure(43); clf; title('Round-5'); figure(1) 
+    ds = 10; 
+    aip.number_of_vm = 2; 
+    aip.S6.sentvty = 0.1; 
+    aip.S6.breaking_iter = 160; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    if admin.S6_r5; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_lagr(); end 
+    
+    %% Round 6 - very slow, more accurate, and convergence focus 
+    figure(43); clf; title('Round-6'); figure(1) 
+    ds = 10; 
+    aip.number_of_vm = 2; 
+    aip.S6.sentvty = 0.005; 
+    aip.S6.breaking_iter = 80; 
+    if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); end 
+    if admin.S6_r6; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_lagr(); end 
+end 
+
+%% Virtual marker only 
+if get_mode==3 
+end 
+
+%% 
+end_time = toc; 
+disp(' '); disp(['Time taken = ',num2str((end_time-start_time)/60),' mins']) 
+csvwrite([['../CSV_OUTPUT', path_suffix, '/Time taken = '],num2str(ceil((end_time-start_time)/60)),' mins.csv'],[start_time,end_time]) 

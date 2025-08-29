@@ -1,0 +1,21 @@
+clear all 
+
+%% Load marker xlsx data
+[filename, pathname, filterindex] = uigetfile('*.xlsx', 'Pick the first XLSX file');
+agm_rawdata = readtable([pathname,filename],'Range','A1:K114'); 
+
+%% Rearrange tables
+agm_rawdata_struct = table2struct(agm_rawdata);
+order_needed = {'name', 'lon', 'lat', 'odo1', 'odo2', 'odo3', 'odosum', 'hgt'}; 
+
+varnames = {}; varvals = {}; 
+for fld=order_needed 
+    varvals = [varvals, agm_rawdata.(fld{:})]; 
+    rmfield(agm_rawdata, fld{:})
+end 
+
+col_names = fields(agm_rawdata_struct)'; 
+for fld=order_needed 
+    varvals = [varvals, agm_rawdata.(fld{:})]; 
+    rmfield(agm_rawdata, fld{:})
+end 

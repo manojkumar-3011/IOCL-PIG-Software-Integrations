@@ -1,0 +1,259 @@
+function master_exec(varargin)
+
+    % Input disp 
+    arg_num = 6; 
+    if arg_num == numel(varargin)
+        en_disp = varargin{arg_num};
+    else
+        en_disp = false;  % Assign infinitely long intervals by default
+    end
+    if en_disp % display 
+        rmpath('overwrite_inbuilt_functions/')
+    else 
+        addpath('overwrite_inbuilt_functions/')
+        warning('off','all'); 
+    end 
+
+    current_folder = fileparts(mfilename("fullpath"));
+    source_folder = cd(current_folder);
+    % format long;
+    s = RandStream('mt19937ar','Seed',15,'NormalTransform','Polar');
+    RandStream.setGlobalStream(s);
+    addpath('../Viz/')
+    addpath('../Test_MEX/DMM_mex/')
+    %% Input 
+    arg_num = 1;
+    % get_mp = input('Input marker IDs for estimation: '); 
+    if arg_num > numel(varargin)
+        get_mp = [];  % Assign an empty value to get_op
+    else
+        get_mp = varargin{arg_num};
+        arg_num = arg_num + 1; 
+    end
+    if isempty(get_mp) 
+        get_mp = 2:3; 
+        en_admin_mode = true; 
+    else 
+        en_admin_mode = false; 
+    end 
+    if strcmp(get_mp,'adm') 
+        en_admin_mode = true; 
+        if arg_num > numel(varargin)
+            get_mp = [];  % Assign an empty value to get_op
+        else
+            get_mp = varargin{arg_num};
+            arg_num = arg_num + 1; 
+        end
+    end 
+
+    % 
+    disp('Press `1` to select gain for SS 16 km pipeline [Default]') 
+    disp('Press `2` to select gain for BP 100 km pipeline ') 
+    disp('Press `0` to enter custom gain value ') 
+    if arg_num > numel(varargin)
+        get_odo_gain = [];  % Assign an empty value to get_op
+    else
+        get_odo_gain = varargin{arg_num};
+        arg_num = arg_num + 1; 
+    end
+    if get_odo_gain==2
+        odo_gain_guess_4obj = pi*125/2000;
+    elseif get_odo_gain==0
+        if arg_num > numel(varargin)
+            odo_gain_guess_4obj = [];  % Assign an empty value to get_op
+        else
+            odo_gain_guess_4obj = varargin{arg_num};
+            arg_num = arg_num + 1; 
+        end
+    else % option=1
+        odo_gain_guess_4obj = pi*0.0795;
+    end 
+
+    % 
+    disp(odo_gain_guess_4obj)
+    disp('Press `0` to select quick mode ') 
+    disp('Press `1` to select quick+accuracy mode (under construction) ') 
+    disp('Press `2` to select only accuracy mode (under construction) ') 
+    disp('Press `3` to select VM mode (under construction) ') 
+    if arg_num > numel(varargin)
+        get_mode = [];  % Assign an empty value to get_op
+    else
+        get_mode = varargin{arg_num};
+        arg_num = arg_num + 1; 
+    end
+    if isempty(get_mode) 
+        get_mode = 0; % <-- quick mode 
+    end 
+
+    % Input graphing frequency
+    if arg_num > numel(varargin)
+        graph_freq = inf;  % Assign infinitely long intervals by default
+    else
+        graph_freq = varargin{arg_num};
+        if graph_freq < 1
+            graph_freq = inf;
+        end
+        arg_num = arg_num + 1; 
+    end
+
+    % Create output folders
+    if arg_num > numel(varargin)
+        date_id = datestr(datetime, 'yymmdd-HHMM');
+    else
+        date_input = varargin{arg_num}; % Input from user or external command
+        try
+            % Validate and convert the date string
+            date_id = datestr(datetime(date_input, 'InputFormat', 'yyyyMMdd-HHmm'), 'yymmdd-HHMM');
+        catch
+            error('Invalid date format. Ensure date is provided in yyyyMMdd-HHmm format.');
+        end
+        arg_num = arg_num + 1;
+    end
+    
+    path_suffix = ['/results_',date_id,'_', mat2str(get_mp)];
+    mkdir(['../OUTPUT', path_suffix])
+    mkdir(['../CSV_OUTPUT', path_suffix])
+
+    %% Patch 
+    try addpath('../patch'); patch_logic_log = fileread(which('logic.m')); % Read the content of patch.m; 
+        save('../patch/patch_logic_log',"patch_logic_log"); 
+        run('logic.m');  % Execute the patch.m script 
+    catch errmsg 
+        save('../patch_logic_error_msg',"errmsg"); 
+    end 
+    
+    %% 
+    tic; 
+    start_time = toc; 
+
+    %% Saved agb_now2 
+    start_breaking_iter = 480; 
+    try % load admin saved params 
+        load('admin_files/to_continue_unkwn_dT_vel_scld.mat','agb_now2') 
+        start_iter = 1; 
+        save(['../OUTPUT', path_suffix, '/to_continue_unkwn_dT_vel_scld.mat'],'start_iter','agb_now2')
+        start_breaking_iter = 40; 
+    catch 
+        try % load previous saved params 
+            load(['../OUTPUT', path_suffix, '/to_continue_unkwn_dT_vel_scld.mat'],'agb_now2') 
+            start_iter = 1; 
+            save(['../OUTPUT', path_suffix, '/to_continue_unkwn_dT_vel_scld.mat'],'start_iter','agb_now2') 
+            start_breaking_iter = 120; 
+        catch 
+        end 
+    end 
+
+    %% AIP 
+    tmp_vm = 0; 
+    aip.ref_data = false; 
+    aip.number_of_vm = tmp_vm; 
+    aip.selected_marker_indices = marker_selector(get_mp); 
+    aip.number_of_vm = 0; 
+    aip.S2.en_pause = true; 
+    aip.S2.pause_timing = 0.2; 
+    aip.S2.dont_save_orient = false; 
+    aip.S6.sentvty = 2; 
+    aip.S6.breaking_iter = start_breaking_iter; % <-- depends on saved files 
+    aip.S6.buzzer_on_iter = inf; 
+    aip.graph_freq = graph_freq;
+    aip.en_plot = @(iter) mod(iter,aip.graph_freq)==0; 
+    aip.path_suffix = path_suffix;
+    % 
+    ds = 1000; 
+
+    %% Admin interface 
+    admin.create_obj = true | ~en_admin_mode; 
+    % 
+    admin.S2_r1 = true | ~en_admin_mode; 
+    admin.S6_r1a = true | ~en_admin_mode; 
+    admin.S6_r1b = true | ~en_admin_mode; 
+    admin.S6_r1c = true | ~en_admin_mode; 
+    %
+    admin.S6_r2 = true | ~en_admin_mode; 
+    %
+    admin.S6_r3 = true | ~en_admin_mode; 
+    %
+    admin.S6_r4 = true | ~en_admin_mode; 
+    %
+    admin.S6_r5 = true | ~en_admin_mode; 
+    %
+    admin.S6_r6 = true | ~en_admin_mode; 
+
+    if get_mode>=0 && get_mode<=1 
+        %% Round 1 - very fast less accurate 
+        figure(43); clf; title('Round-1a'); figure(1) 
+        ds = 100; 
+        aip.number_of_vm = 0; 
+        aip.S6.sentvty = 0.5; 
+        aip.S6.breaking_iter = 120; 
+        if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); c2_sim_ig.odo_gain_guess = odo_gain_guess_4obj; end 
+        if admin.S2_r1; c2_sim_ig.S2_main_compute_initial_orientation(); end 
+        if admin.S6_r1a; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+        if admin.S6_r1a; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+
+        %% Round 2 - fast 
+        figure(43); clf; title('Round-2'); figure(1) 
+        % ds = 100; 
+        % aip.number_of_vm = tmp_vm; 
+        aip.S6.sentvty = 0.1; 
+        aip.S6.breaking_iter = 300; 
+        % if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); c2_sim_ig.odo_gain_guess = odo_gain_guess_4obj; end 
+        c2_sim_ig.auto_inputs.S6.sentvty = aip.S6.sentvty; 
+        c2_sim_ig.auto_inputs.S6.breaking_iter = aip.S6.breaking_iter; 
+        if admin.S6_r2; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+        
+        %% Round 3 - increase accuracy (odovelmag_scld, no loglagr) 
+        figure(43); clf; title('Round-3a'); figure(1) 
+        % ds = 100; 
+        % aip.number_of_vm = tmp_vm; 
+        aip.S6.sentvty = 0.05; 
+        aip.S6.breaking_iter = 1024; 
+        % if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); c2_sim_ig.odo_gain_guess = odo_gain_guess_4obj; end 
+        c2_sim_ig.auto_inputs.S6.sentvty = aip.S6.sentvty; 
+        c2_sim_ig.auto_inputs.S6.breaking_iter = aip.S6.breaking_iter; 
+        if admin.S6_r3; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+        
+        %% Round 4 - convergence focus (no loglagr) 
+        figure(43); clf; title('Round-4'); figure(1) 
+        % ds = 100; 
+        % aip.number_of_vm = tmp_vm; 
+        aip.S6.sentvty = 0.005; 
+        aip.S6.breaking_iter = 360; 
+        % if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); c2_sim_ig.odo_gain_guess = odo_gain_guess_4obj; end 
+        c2_sim_ig.auto_inputs.S6.sentvty = aip.S6.sentvty; 
+        c2_sim_ig.auto_inputs.S6.breaking_iter = aip.S6.breaking_iter; 
+        if admin.S6_r4; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_loglagr(); end 
+    end 
+
+    if get_mode>=1 && get_mode<=2 
+        %% Round 5 - slow, less accurate, and convergence focus 
+        figure(43); clf; title('Round-5'); figure(1) 
+        ds = 10; 
+        aip.number_of_vm = tmp_vm; 
+        aip.S6.sentvty = 0.1; 
+        aip.S6.breaking_iter = 160; 
+        if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); c2_sim_ig.odo_gain_guess = odo_gain_guess_4obj; end 
+        if admin.S6_r5; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_lagr(); end 
+        
+        %% Round 6 - very slow, more accurate, and convergence focus 
+        figure(43); clf; title('Round-6'); figure(1) 
+        ds = 10; 
+        aip.number_of_vm = tmp_vm; 
+        aip.S6.sentvty = 0.005; 
+        aip.S6.breaking_iter = 80; 
+        if admin.create_obj; c2_sim_ig = simulate_ili_run_expC2(ds,true,aip); c2_sim_ig.odo_gain_guess = odo_gain_guess_4obj; end 
+        if admin.S6_r6; c2_sim_ig.S6b_mbf_mnfld_dyn_unkwn_smple_vscl_ovcst_vscst_gd_lagr(); end 
+    end 
+
+    %% Virtual marker only 
+    if get_mode==3 
+    end 
+
+    %% 
+    end_time = toc; 
+    disp(' '); disp(['Time taken = ',num2str((end_time-start_time)/60),' mins']) 
+    csvwrite([['../CSV_OUTPUT', path_suffix, '/Time taken = '],num2str(ceil((end_time-start_time)/60)),' mins.csv'],[start_time,end_time]) 
+
+    cd(source_folder)
+    rmpath('overwrite_inbuilt_functions/')
+end

@@ -1,0 +1,102 @@
+clear all 
+
+%% Clean INPUT folder if not empty for storage - makes backup also 
+filePattern = fullfile('../INPUT', '*.mat'); % Change to the desired pattern
+theFiles = dir(filePattern); 
+if size(theFiles,1)~=0 
+    mkdir('../old_inputs')
+    copyfile('../INPUT',['../old_inputs/INPUT_',datestr(datetime('now'),'yyyymmddHHMMss')])
+    delete('../INPUT/*')
+end 
+
+%% Get the first file 
+[filename, pathname, filterindex] = uigetfile('*.csv', 'Pick the first IMU CSV file');
+try 
+    dtvar = datetime(filename(1:end-4),'InputFormat','yyyyMMddHHmmss'); 
+catch 
+    clc 
+    disp('Invalid input!') 
+end 
+
+%% Load marker xlsx data
+[filename2, pathname2, filterindex2] = uigetfile('*.xlsx', 'Pick the Marker XLSX file');
+agm_rawdata = readtable([pathname2,filename2],'Range','A1:K114'); 
+
+%% Processing IMU data 
+%% Create mat files 
+IMU_IDs = struct(); 
+filePattern2 = fullfile(pathname, '*.csv'); % Change to the desired pattern
+theFiles2 = dir(filePattern2); 
+varnames_imu = {'VarName1', 'VarName2', 'VarName3', 'VarName4', 'VarName5', 'VarName6', 'VarName7', 'VarName8', 'VarName9'}; 
+
+for file_no=1:size(theFiles2,1) 
+    data_array = csvread([pathname,datestr(dtvar + hours(file_no-1),'yyyymmddHHMMss'),'.csv'],1); 
+    clc 
+    disp(['# IMU files created: ',num2str(file_no),' of ',num2str(size(theFiles2,1))]) 
+    if file_no==1 
+        static = data_array'; 
+        save('../INPUT/static_data.mat', "static") 
+        disp(['  >> Last file created: static_data.mat']) 
+    else 
+        data = array2table(data_array(:,1:9),'VariableNames',varnames_imu); 
+        IMU_IDs(file_no-1).name = ['IMUdata',num2str(file_no-1)]; 
+        IMU_IDs(file_no-1).associated_file = [datestr(dtvar + hours(file_no)),'.csv']; 
+        save(['../INPUT/',IMU_IDs(file_no-1).name,'.mat'], "data") 
+        disp(['  >> Last file created: ',IMU_IDs(file_no-1).name,'.mat']) 
+    end 
+    clear data data_array filterindex 
+end 
+
+%% IMU_ID_data
+save('../INPUT/IMU_ID_data_file.mat', 'IMU_IDs') 
+disp(['  +1 File created: IMU_ID_data_file.mat']) 
+
+%% Processing AGM data 
+%% Cleaning AGM table
+sz_agm_rawdata = length(agm_rawdata.name); 
+non_empty_entries = false(sz_agm_rawdata,1); 
+for i=1:sz_agm_rawdata 
+    if ~isempty(agm_rawdata.name{i})
+        non_empty_entries(i) = true; 
+    end 
+end 
+
+%% Rearrange tables
+agm_rawdata_struct = table2struct(agm_rawdata(non_empty_entries,:));
+order_needed = {'name', 'lat', 'lon', 'odo1', 'odo2', 'odo3', 'odosum', 'hgt'}; 
+
+varnames = order_needed; varvals = {}; 
+for fld=order_needed 
+    fld_data = agm_rawdata.(fld{:}); 
+    if iscell(fld_data)
+        varvals = [varvals, fld_data(non_empty_entries)]; 
+    else
+        varvals = [varvals, num2cell(fld_data(non_empty_entries))]; 
+    end 
+    agm_rawdata_struct = rmfield(agm_rawdata_struct, fld{:}); 
+end 
+
+col_names = fields(agm_rawdata_struct)'; 
+for fld=col_names 
+    fld_data = agm_rawdata.(fld{:}); 
+    if iscell(fld_data)
+        varvals = [varvals, fld_data]; 
+    else
+        varvals = [varvals, num2cell(fld_data)]; 
+    end 
+    varnames = [varnames, fld{:}]; 
+end 
+
+markers = cell2table(varvals,"VariableNames",varnames); 
+
+%% Curved info 
+
+varnames_mci = {'name', 'curved', 'fwd_curved', 'bckwd_curved'}; 
+varvals_mci = varvals(:,1); 
+varvals_mci(:,2:4) = num2cell( true( size(varvals_mci,1),3 ) ); 
+
+marker_curve_info = cell2table(varvals_mci,"VariableNames",varnames_mci); 
+
+%% Save it 
+save('../INPUT/markers.mat', "markers", "marker_curve_info");  
+disp(['  +1 File created: markers.mat']) 

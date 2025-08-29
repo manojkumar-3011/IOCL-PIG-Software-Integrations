@@ -1,0 +1,86 @@
+[
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   pig_eucld_dynamics_data.c -Fobuild\\win64\\pig_eucld_dynamics_data.obj",
+    "file": "pig_eucld_dynamics_data.c",
+    "output": "build/win64/pig_eucld_dynamics_data.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   rt_nonfinite.c -Fobuild\\win64\\rt_nonfinite.obj",
+    "file": "rt_nonfinite.c",
+    "output": "build/win64/rt_nonfinite.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   pig_eucld_dynamics_initialize.c -Fobuild\\win64\\pig_eucld_dynamics_initialize.obj",
+    "file": "pig_eucld_dynamics_initialize.c",
+    "output": "build/win64/pig_eucld_dynamics_initialize.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   pig_eucld_dynamics_terminate.c -Fobuild\\win64\\pig_eucld_dynamics_terminate.obj",
+    "file": "pig_eucld_dynamics_terminate.c",
+    "output": "build/win64/pig_eucld_dynamics_terminate.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   pig_eucld_dynamics.c -Fobuild\\win64\\pig_eucld_dynamics.obj",
+    "file": "pig_eucld_dynamics.c",
+    "output": "build/win64/pig_eucld_dynamics.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   expm.c -Fobuild\\win64\\expm.obj",
+    "file": "expm.c",
+    "output": "build/win64/expm.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   warning.c -Fobuild\\win64\\warning.obj",
+    "file": "warning.c",
+    "output": "build/win64/warning.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   interface\\_coder_pig_eucld_dynamics_api.c -Fobuild\\win64\\_coder_pig_eucld_dynamics_api.obj",
+    "file": "interface/_coder_pig_eucld_dynamics_api.c",
+    "output": "build/win64/_coder_pig_eucld_dynamics_api.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   interface\\_coder_pig_eucld_dynamics_mex.c -Fobuild\\win64\\_coder_pig_eucld_dynamics_mex.obj",
+    "file": "interface/_coder_pig_eucld_dynamics_mex.c",
+    "output": "build/win64/_coder_pig_eucld_dynamics_mex.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   sumMatrixIncludeNaN.c -Fobuild\\win64\\sumMatrixIncludeNaN.obj",
+    "file": "sumMatrixIncludeNaN.c",
+    "output": "build/win64/sumMatrixIncludeNaN.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   eml_int_forloop_overflow_check.c -Fobuild\\win64\\eml_int_forloop_overflow_check.obj",
+    "file": "eml_int_forloop_overflow_check.c",
+    "output": "build/win64/eml_int_forloop_overflow_check.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   interface\\_coder_pig_eucld_dynamics_info.c -Fobuild\\win64\\_coder_pig_eucld_dynamics_info.obj",
+    "file": "interface/_coder_pig_eucld_dynamics_info.c",
+    "output": "build/win64/_coder_pig_eucld_dynamics_info.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   \"C:\\Program Files\\MATLAB\\R2021b\\extern\\version\\c_mexapi_version.c\" -Fobuild\\win64\\c_mexapi_version.obj",
+    "file": "C:/Program Files/MATLAB/R2021b/extern/version/c_mexapi_version.c",
+    "output": "build/win64/c_mexapi_version.obj"
+  },
+  {
+    "directory": "F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\\codegen\\mex\\pig_eucld_dynamics",
+    "command": "lcc64 -nodeclspec -Zp8 -dll -c -I\"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\include64\" -DMATLAB_MEX_FILE -noregistrylookup -DNDEBUG -I\".\" -I\"F:\\Academic\\Dropbox\\Recent\\WorkQC\\Experiment for 100km data\\FSP_ver0r3_speed\\Test_MEX\\DMM_mex\" -I\".\\interface\" -I\"C:\\Program Files\\MATLAB\\R2021b\\extern\\include\" -I\".\" -DMODEL=pig_dynamics_mex   \"C:\\Program Files\\MATLAB\\R2021b\\sys\\lcc64\\lcc64\\mex\\lccstub.c\" -Fobuild\\win64\\lccstub.obj",
+    "file": "C:/Program Files/MATLAB/R2021b/sys/lcc64/lcc64/mex/lccstub.c",
+    "output": "build/win64/lccstub.obj"
+  }
+]

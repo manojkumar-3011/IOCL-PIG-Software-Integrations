@@ -1,0 +1,60 @@
+function x_next = pig_dynamics(t,x,u,params)
+
+earth_gravity = 9.81; 
+east_radius_of_earth = 6378100; % equatorial (Wikipedia) 
+north_radius_of_earth = 6356800; % polar (Wikipedia) 
+manifld_factr_en = 1; % manifold is default 
+rotn_factr_en = 1; % earth rotation is default value 
+rot_rate_of_earth = 7.292115e-5; % radians per second [=7.292115e-5*180/pi*86400 = 360.9856] 
+
+% main  
+n_omega_ie = @(p) rotn_factr_en*[rot_rate_of_earth*cosd(p(1));0;rot_rate_of_earth*sind(p(1))]; 
+n_omega_en = @(p,v) manifld_factr_en*[-v(2)/((east_radius_of_earth+p(3)));v(1)/(north_radius_of_earth+p(3));-v(2)*tand(p(1))/(east_radius_of_earth+p(3))]; 
+Sx = @(w) [0,-w(3),w(2);w(3),0,-w(1);-w(2),w(1),0]; 
+Qx = @(w) 0.5*[0,-w(1),-w(2),-w(3);w(1),0,w(3),-w(2);w(2),-w(3),0,w(1);w(3),w(2),-w(1),0]; 
+C_nb = @(t,p,q,v) roty(-p(1))*rotx(-p(2))...
+    *rotx(-t*rot_rate_of_earth*180/pi)*quat2rotm(q'); % eul2rotm(flip(omega_ie(p)')*t)
+gl = @(p) -Sx(n_omega_ie(p))*Sx(n_omega_ie(p))*[0;0;(east_radius_of_earth+p(3))]+[0;0;-earth_gravity]; 
+
+G_func = @(p,v) [180*v(1)/(pi*(north_radius_of_earth+p(3)));...
+    -180*v(2)/(pi*(east_radius_of_earth+p(3))*cosd(p(1)));v(3)]; 
+
+f_p = @(p,v,dT) p + dT*G_func(p,v); 
+q_gen = @(q,bs,imu_w,prms) expm(Qx(prms(4:6).*imu_w + bs(4:6))*prms(7))*q; 
+f_q = @(q,bs,imu_w,prms) q_gen(q,bs,imu_w,prms); % [not needed] /norm(q_gen(q,bs,imu_w)); 
+f_v = @(t,p,q,v,bs,imu_a,prms) v + prms(7)*(C_nb(t,p,q,v)*(prms(1:3).*imu_a + bs(1:3))...
+    -Sx(2*n_omega_ie(p)+n_omega_en(p,v))*v+gl(p)); 
+
+% o <--x(1) | p <--x(2:4) | q <--x(5:8) | v <--x(9:11) | bs <--x(12:17) [+] imu_a <--u(1:3) | imu_w <--u(4:6)  
+s = x(1); v = prms(8)*x(9:11); dT = prms(7); 
+q = x(5:8); bs = x(12:17),u(4:6),prms
+f_s = s + dT*norm(v); 
+f = [zeros(11,1);x(12:17,1)]; 
+g = [f_s;f_p(x(2:4),prms(8)*x(9:11),prms(7));f_q;f_v(t,x(2:4),x(5:8),x(9:11),x(12:17),u(1:3),prms);zeros(6,1)]; 
+x_next = f(x) + g(t,x,u,params);
+
+end 
+% 
+% 
+% % main  
+% n_omega_ie = @(p) rotn_factr_en*[rot_rate_of_earth*cosd(p(1));0;rot_rate_of_earth*sind(p(1))]; 
+% n_omega_en = @(p,v) manifld_factr_en*[-v(2)/((east_radius_of_earth+p(3)));v(1)/(north_radius_of_earth+p(3));-v(2)*tand(p(1))/(east_radius_of_earth+p(3))]; 
+% Sx = @(w) [0,-w(3),w(2);w(3),0,-w(1);-w(2),w(1),0]; 
+% Qx = @(w) 0.5*[0,-w(1),-w(2),-w(3);w(1),0,w(3),-w(2);w(2),-w(3),0,w(1);w(3),w(2),-w(1),0]; 
+% C_nb = @(t,p,q,v) roty(-p(1))*rotx(-p(2))...
+%     *rotx(-t*rot_rate_of_earth*180/pi)*quat2rotm(q'); % eul2rotm(flip(omega_ie(p)')*t)
+% gl = @(p) -Sx(n_omega_ie(p))*Sx(n_omega_ie(p))*[0;0;(east_radius_of_earth+p(3))]+[0;0;-earth_gravity]; 
+% 
+% G_func = @(p,v) [180*v(1)/(pi*(north_radius_of_earth+p(3)));...
+%     -180*v(2)/(pi*(east_radius_of_earth+p(3))*cosd(p(1)));v(3)]; 
+% f_s = @(s,v,dT) s + dT*norm(v); 
+% f_p = @(p,v,dT) p + dT*G_func(p,v); 
+% q_gen = @(q,bs,imu_w,prms) expm(Qx(prms(4:6).*imu_w + bs(4:6))*prms(7))*q; 
+% f_q = @(q,bs,imu_w,prms) q_gen(q,bs,imu_w,prms); % [not needed] /norm(q_gen(q,bs,imu_w)); 
+% f_v = @(t,p,q,v,bs,imu_a,prms) v + prms(7)*(C_nb(t,p,q,v)*(prms(1:3).*imu_a + bs(1:3))...
+%     -Sx(2*n_omega_ie(p)+n_omega_en(p,v))*v+gl(p)); 
+% 
+% % o <--x(1) | p <--x(2:4) | q <--x(5:8) | v <--x(9:11) | bs <--x(12:17) [+] imu_a <--u(1:3) | imu_w <--u(4:6)  
+% f = @(x) [zeros(11,1);x(12:17,1)]; 
+% g = @(t,x,u,prms) [f_s(x(1),prms(8)*x(9:11),prms(7));f_p(x(2:4),prms(8)*x(9:11),prms(7));f_q(x(5:8),x(12:17),u(4:6),prms);f_v(t,x(2:4),x(5:8),x(9:11),x(12:17),u(1:3),prms);zeros(6,1)]; 
+% x_next = f(x) + g(t,x,u,params);

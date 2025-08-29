@@ -1,0 +1,67 @@
+IIT Bombay - Indian Oil Corporation Limited Proprietary License
+Proprietary License Agreement
+Version 1.0
+Date: 1st December 2024
+
+This license governs the use, reproduction, distribution, and modification of the work jointly created by Dr. Somnath Buriuly and Siddhesh Girase, under the collaboration of the Oil and Gas Department, Indian Institute of Technology Bombay (IIT Bombay) and the Research and Development Centre of Indian Oil Corporation Limited (IOCL).
+
+1. Ownership and Copyright
+This work, including all associated intellectual property, is jointly owned by:
+
+Indian Institute of Technology Bombay
+Indian Oil Corporation Limited
+Copyright © 2024 IIT Bombay and Indian Oil Corporation Limited. All Rights Reserved.
+
+2. Restrictions
+The following actions are strictly prohibited without explicit written permission from the authors or the respective organizations:
+
+Unauthorized Use:
+
+No individual, institution, or entity may use, execute, or implement this work in any form, including but not limited to software, research, or technological applications.
+Reproduction and Distribution:
+
+Reproducing, copying, sharing, or distributing any part of this work, whether electronically or physically, is strictly forbidden.
+Modification and Derivative Works:
+
+Creating modified versions, derivative works, or adaptations of this material is not permitted.
+Commercial and Non-Commercial Usage:
+
+Any commercial or non-commercial use of this work, including for educational purposes, research, or demonstrations, is strictly restricted.
+Reverse Engineering:
+
+Any attempt to reverse-engineer, disassemble, decompile, or decode any part of this work is expressly prohibited.
+3. Authorized Access
+Access to this work is restricted to individuals and organizations with written permission from IIT Bombay or Indian Oil Corporation Limited. Unauthorized access or sharing of credentials for access is prohibited.
+
+4. Contact Information for Permissions
+
+Indian Institute of Technology Bombay
+Professor in Charge
+4th Floor, CoE-OGE, RBTIC Building
+Indian Institute of Technology Bombay
+Powai, Mumbai 400 076, (Maharashtra), India
+
+Email: office.coeoge@iitb.ac.in, office.admin.coeoge@iitb.ac.in, pic.coeoge@iitb.ac.in
+Phone:
+Admin/Training: +91-22-2159 3889
+Projects: +91-22-2159 6794
+
+
+Indian Oil Corporation Limited (IOCL) – R&D Centre
+Please refer to the official IOCL R&D Centre contact details:
+https://iocl.com/pages/r-and-d-centre
+
+
+5. Legal Disclaimer
+The authors and owners of this work provide it "as-is" without any warranties or guarantees of any kind. Any violation of the terms of this license will result in legal action under the applicable laws of India.
+
+6. Governing Law
+This license is governed by and shall be interpreted under the laws of the Republic of India. All disputes arising from this license shall be resolved exclusively in the courts of Mumbai, Maharashtra.
+
+7. Acknowledgment
+By accessing or attempting to use this work, you acknowledge that you have read, understood, and agree to comply with all the terms outlined in this license.
+
+For permissions and inquiries, please contact the organizations listed above.
+
+Copyright © 2024 IIT Bombay and Indian Oil Corporation Limited. All Rights Reserved.
+
