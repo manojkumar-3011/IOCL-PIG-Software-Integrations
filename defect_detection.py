@@ -58,68 +58,86 @@ def folder_selection():
         messagebox.showerror("Folder Error", "No folder selected.")
 
 def matchOdoWithLocation(val):
-    for index,value in enumerate(odo1_array):
-        if (value == val):
-            print(lat_array[index],lon_array[index])
-            return lat_array[index], lon_array[index]
+    print("plotindex:",val)
+    print(odo2dnumpyarray[page_no][val],lat2dnumpyarray[page_no][val],lon2dnumpyarray[page_no][val],height2dnumpyarray[page_no][val])
+    return lat2dnumpyarray[page_no][val], lon2dnumpyarray[page_no][val],height2dnumpyarray[page_no][val]
 
-def GetLocationValues(val):
+def GetLocationValues(PlotIndex):
 
-    global odo1_array, lat_array, lon_array
-    # actual code with input values from siddhesh code     
-    
+    global odo2dnumpyarray, lat2dnumpyarray, lon2dnumpyarray, height2dnumpyarray, csvfileisnotread
 
-    no_of_files = len(received_paths)
-    
-    for path in received_paths:
-        print(path)
-        print("print1")
-    
-    # # Now you can safely make them raw-style
-    # raw_filepaths = [fr"{f}" for f in received_paths]
-    
-    raw_filepaths = [path.replace("\\", "\\\\") for path in received_paths]
+    if csvfileisnotread == True:
 
-    for path in raw_filepaths:
-        print(path)
-        print("print2")
+        # List of CSV files
         
-    try:
+        for path in received_paths:
+            print(path)
+            print("print1")
+        
+        raw_filepaths = [path.replace("\\", "\\\\") for path in received_paths]
 
-        df_list = [pd.read_csv(path) for path in raw_filepaths]
-        # print(df_list)
+        for path in raw_filepaths:
+            print(path)
+            print("print2")
+
+        # 1D lists to store all values from all files
         odo1_rows = []
         lat_rows = []
         lon_rows = []
-        
-        for file in range(no_of_files):
-            # Loop through each row in the DataFrame
-            for i in range(len(df_list[file])):
-                row = df_list[file].iloc[i]
-                for col in df_list[file].columns:
-                    value = row[col]
-                    if pd.notna(value) and value != '':
-                        if col == "odo":
-                            odo1_rows.append(row[col])
-                        elif col == "Lat":
-                            lat_rows.append(row[col])  
-                        elif col == "lon":
-                            lon_rows.append(row[col])
+        height_rows = []
 
-            # Convert lists to NumPy arrays
-        odo1_array = np.array(odo1_rows)
-        lat_array = np.array(lat_rows)
-        lon_array = np.array(lon_rows)   
+        # Read each file and collect data
+        for path in raw_filepaths:
+            df = pd.read_csv(path)
 
-        lat , lon = matchOdoWithLocation(val)      
-        
-        return lat, lon              
+            if "odo" in df.columns:
+                odo1_rows.extend(df["odo"].dropna().tolist())
+            if "Lat" in df.columns:
+                lat_rows.extend(df["Lat"].dropna().tolist())
+            if "lon" in df.columns:
+                lon_rows.extend(df["lon"].dropna().tolist())
+            if "height" in df.columns:
+                # Assuming you want to append height values to lon_rows
+                height_rows.extend(df["height"].dropna().tolist())
 
-    except FileNotFoundError:
-        print("❌ File not found. Please check the file path.")
-    except Exception as e:
-        print(f"❌ An error occurred: {e}")
+        # Dimensions for 2D arrays
+        pagelen = 179
+        plotlen = 4999
 
+        # Initialize empty 2D arrays
+        two_d_odoarr = [[0 for _ in range(plotlen)] for _ in range(pagelen)]
+        two_d_latarr = [[0 for _ in range(plotlen)] for _ in range(pagelen)]
+        two_d_lonarr = [[0 for _ in range(plotlen)] for _ in range(pagelen)]
+        two_d_heightarr = [[0 for _ in range(plotlen)] for _ in range(pagelen)]
+
+        # Fill 2D arrays safely from 1D lists
+        val = 0
+        for i in range(pagelen):
+            for j in range(plotlen):
+                if val < len(odo1_rows):
+                    two_d_odoarr[i][j] = odo1_rows[val]
+                    two_d_latarr[i][j] = lat_rows[val]
+                    two_d_lonarr[i][j] = lon_rows[val]
+                    two_d_heightarr[i][j] = lon_rows[val]
+                    val += 1
+                else:
+                    break
+
+        # Convert to NumPy arrays
+        odo2dnumpyarray = np.array(two_d_odoarr)
+        lat2dnumpyarray = np.array(two_d_latarr)
+        lon2dnumpyarray = np.array(two_d_lonarr)
+        height2dnumpyarray = np.array(two_d_heightarr)
+
+        csvfileisnotread = False
+
+
+    # Call your function for matching ODO with location
+    lat, lon, height = matchOdoWithLocation(PlotIndex)
+
+    return lat, lon , height 
+
+          
 
 def select_new_file():
     global file_path1, page_no
@@ -210,8 +228,8 @@ def format_coord(x, y):
         x_range_end = min(samps, x_int + 25)
         y_values = rawdata_pri3[y_int, x_range_start:x_range_end]
         peak_to_peak = np.max(y_values) - np.min(y_values)
-        lat , lon = GetLocationValues(x_int)
-        return f"Sensor: {y_int}, Sample: {x_int}, Gauss: {peak_to_peak:.0f}, lat: {lat}, lon: {lon}"  # ✅ return something, not ""
+        lat , lon, height = GetLocationValues(x_int)
+        return f"Sensor: {y_int}, Sample: {x_int}, Gauss: {peak_to_peak:.0f}, lat: {lat}, lon: {lon}, height: {height}"  # ✅ return something, not ""
     else:
         return "Out of range"  # ✅ prevents default pixel value display
 
@@ -222,8 +240,8 @@ def format_coord_sec(x, y):
         x_range_end = min(samps, x_int + 25)
         y_values = rawdata_sec3[y_int, x_range_start:x_range_end]
         peak_to_peak = np.max(y_values) - np.min(y_values)
-        lat , lon = GetLocationValues(x_int)
-        return f"Sensor: {y_int}, Sample: {x_int}, Gauss: {peak_to_peak:.0f}, lat: {lat}, lon: {lon}"  # ✅ return something, not ""
+        lat , lon, height = GetLocationValues(x_int)
+        return f"Sensor: {y_int}, Sample: {x_int}, Gauss: {peak_to_peak:.0f}, lat: {lat}, lon: {lon}, height: {height}"  # ✅ return something, not ""
     else:
         return "Out of range"  # ✅ prevents default pixel value display
 

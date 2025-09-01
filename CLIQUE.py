@@ -12,9 +12,9 @@ def defect_marking_format_coord(x, y):
         x_range_end = min(samps, x_int + 25)
         y_values = rawdata_pri3[y_int, x_range_start:x_range_end]
         peak_to_peak = np.max(y_values) - np.min(y_values)
-        lat, lon = GetLocationValues(x_int)
-        print(f"lat: {lat}, lon: {lon}")
-        return f"Sensor: {y_int}, Sample: {x_int}, Gauss: {peak_to_peak:.0f}, lat: {lat}, lon: {lon}"  # ✅ Return something here
+        lat, lon, height = GetLocationValues(x_int)
+        print(f"lat: {lat}, lon: {lon}, height: {height}")
+        return f"Sensor: {y_int}, Sample: {x_int}, Gauss: {peak_to_peak:.0f}, lat: {lat}, lon: {lon}, height: {height}"  # ✅ Return something here
     else:
         return "Out of range"  # ✅ Avoid empty string
 
@@ -25,9 +25,9 @@ def labelgrid_format_coord(x, y):
         x_range_end = min(samps, x_int + 25)
         y_values = rawdata_pri3[y_int, x_range_start:x_range_end]
         peak_to_peak = np.max(y_values) - np.min(y_values)
-        lat , lon = GetLocationValues(x_int)
-        print(f"lat: {lat}, lon: {lon}")
-        return f"Sensor: {y_int}, Sample: {x_int}, Gauss: {peak_to_peak:.0f}, lat: {lat}, lon: {lon}"  # ✅ return something, not ""
+        lat , lon, height = GetLocationValues(x_int)
+        print(f"lat: {lat}, lon: {lon}, height: {height}")
+        return f"Sensor: {y_int}, Sample: {x_int}, Gauss: {peak_to_peak:.0f}, lat: {lat}, lon: {lon}, height: {height}"  # ✅ return something, not ""
     else:
         return "Out of range"  # ✅ prevents default pixel value display
 
