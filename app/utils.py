@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
 import messages, schema, constants
 from logger import logger
+from constants import file_path
 
 result_folders = []
 
@@ -377,11 +378,17 @@ def execute_parallel_threads(matlab_script_path, computation_method, num_threads
                         result_folder = os.path.join(
                         os.path.abspath('.'),constants.MATLAB_TEMP_OUTPUT_FOLDERS[1],
                         f"results_{time_stamp[2:]}_{checkpoints_str}")
-                        result_folder = os.path.join(result_folder, f"all_estimates.csv")
+
+                        result_filepath = os.path.join(result_folder, f"all_estimates.csv")
                         result_folders.append(result_folder)
 
-                        folder_df = pd.DataFrame(result_folders, columns=['Result Folder'])
-                        folder_df.to_csv(constants.APP_RESULT_FOLDER_PATH, index=False)
+                        # Save the list to a file
+                       # Open the file in append mode ('a') so it doesn't overwrite existing content
+                        with open(file_path, 'a') as f:
+                            f.write(result_filepath + '\n')
+
+                        # folder_df = pd.DataFrame(result_folders, columns=['Result Folder'])
+                        # folder_df.to_csv(constants.APP_RESULT_FOLDER_PATH, index=False)
 
                         print("result path created")
                         status = schema.AppStatus.COMPLETED.status_name()

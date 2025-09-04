@@ -40,6 +40,7 @@ MAT_DB_RELATIVE_PATH = os.path.join('MAT INPUT DB')
 MATLAB_RESULT_FILE_NAME = os.path.join('all_estimates')
 MATLAB_CSV_FILE_NAME = 'all_estimates.csv'
 APP_RESULT_FOLDER_PATH = os.path.join('logs', 'result_folders.csv')
+file_path = "list_file.txt"
 
 
 

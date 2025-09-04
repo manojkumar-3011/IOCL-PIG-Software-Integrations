@@ -17,8 +17,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPainter, QBrush
 from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget
-
-
+from constants import file_path
 
 def resource_path(relative_path):
     try:
@@ -725,18 +724,30 @@ class MainWindow(QWidget):
         #     print("File path:", i)
         folder_list = []
         import pandas as pd
+        # Read file into list
+        with open(file_path, 'r') as f:
+            loaded_list = [line.strip() for line in f]
+
+        # Access items one by one using for loop
+        for item in loaded_list:
+            folder_list.append(item)
+            print("Current item:", item)
         
+        os.remove(file_path)
+
         # df = pd.read_csv("fruits.csv")
         # df = pd.read_csv(os.path.join(os.path.abspath("."), constants.APP_RESULT_FOLDER_PATH), header=None).values.tolist()
-        exceldatapath = os.path.join(os.path.abspath("."), constants.APP_RESULT_FOLDER_PATH)
-        df = pd.read_csv(
-            exceldatapath,
-            header=None,
-            names=['Result Folder'])
-        os.remove(exceldatapath)
-        folder_list = df["Result Folder"].values.tolist()
+        # exceldatapath = os.path.join(os.path.abspath("."), constants.APP_RESULT_FOLDER_PATH)
+        # df = pd.read_csv(
+        #     exceldatapath,
+        #     header=None,
+        #     names=['Result Folder'])
+        # os.remove(exceldatapath)
+        # folder_list = df["Result Folder"].values.tolist()
         # Absolute or relative path to multiply_runtime_input.py
-        script_path = r"C:\Users\ParthGhag_ECL109\Documents\TIH\IOCL-UPDATE\24inch_code_iocl_with_defect_marking\main.py"  # <- change as needed
+        script_path = r"C:\Users\admin\Downloads\TIH-IOCL\IOCL_PIG_Software_Integration\main.py"  # <- change as needed
+
+        
         json_paths = json.dumps(folder_list)
         
         # from datetime import datetime
